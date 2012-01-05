@@ -1,4 +1,5 @@
 require 'config.rb'
+require 'manifest.rb'
 
 def pulverize(dir)
   return if dir.empty?
@@ -31,6 +32,7 @@ def pulverize(dir)
         File.open(dirpath, 'w') do |output|
           output.puts lines
         end
+        saveManifest()
       end
     end
   end
@@ -48,12 +50,13 @@ def concat(dir, files, type, id)
 end
 
 def min(file)
-  newfile = file.gsub(/\.([a-zA-Z])*$/, ".min\\0")
+  newfile = file.gsub(/\.([a-zA-Z])*$/, ".min-v"+$nextVersion+"\\0")
   #minify using yuicompressor
   pulverized = %x[java -jar tools/yuicompressor-2.4.5.jar #{file} -o #{newfile}]
   return newfile
-  
 end
+
+
 
 def buildRef(path, type, id)
   open = "<!--pvl type='"+type+"' id='"+id+"' -->"
@@ -66,8 +69,11 @@ def buildRef(path, type, id)
 end
 
 def saveManifest
+  #increment version and save
+  nextVersion = (Integer($nextVersion.gsub('.', '')) + 1).to_s().insert(2, '.').insert(1, '.')
+  
   File.open('manifest.rb', 'w') do |manifest|
-    
+    manifest.puts '$nextVersion = "'+nextVersion+'"'
   end
 end
 
