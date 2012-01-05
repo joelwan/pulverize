@@ -3,7 +3,7 @@ require 'config.rb'
 def pulverize(dir)
   return if dir.empty?
   
-  pattern = /(\<\!\-\-pvl.*?type[ ]*=[ ]*[\'\"]([^\"]*)[\'\"].*?id[ ]*=[ ]*[\'\"]([^\"]*)[\'\"].*?\<\!\-\-\/pvl\-\-\>)/im
+  pattern = /(\<\!\-\-pvl.*?type[ ]*=[ ]*[\'\"]([^\"\']*)[\'\"].*?id[ ]*=[ ]*[\'\"]([^\"\']*)[\'\"].*?\<\!\-\-\/pvl\-\-\>)/im
   
   Dir.foreach(dir) do |file|
     dirpath = dir + '/' + file
@@ -24,7 +24,7 @@ def pulverize(dir)
             unless set.nil?
               tmp = concat(dir, set, type, id)
               pulverized = min(tmp)              
-              lines = lines.gsub(match[0], buildRef(pulverized, type))
+              lines = lines.gsub(match[0], buildRef(pulverized, type, id))
             end
           end
         }
@@ -55,11 +55,13 @@ def min(file)
   
 end
 
-def buildRef(path, type)
+def buildRef(path, type, id)
+  open = "<!--pvl type='"+type+"' id='"+id+"' -->"
+  close = "<!--/pvl-->"
   if type == 'js'
-    return '<script src="'+path+'" type="text/javascript"></script>'
+    return open+'<script src="'+path.gsub($root, '')+'" type="text/javascript"></script>'+close
   elsif type == 'css'
-    return '<link rel="stylesheet" href="'+path+'" type="text/css" />'
+    return open+'<link rel="stylesheet" href="'+path.gsub($root, '')+'" type="text/css" />'+close
   end
 end
 
@@ -69,4 +71,5 @@ def saveManifest
   end
 end
 
-pulverize('test')
+$root = 'test'
+pulverize($root)
