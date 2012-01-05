@@ -1,8 +1,13 @@
 $config = {
   'extensions'  => {},
+  'cssPath'     => "",
+  "jsPath" => "",
   'css'         => {},
-  'scripts'     => {}
+  'js'     => {}
 }
+
+$config['cssPath'] = 'css'
+$config['jsPath'] = 'scripts'
 
 $config['extensions'] = [
   '.html',
@@ -18,7 +23,7 @@ $config['css'] = {
     ]
 }
 
-$config['scripts'] = {
+$config['js'] = {
   'all' => [
     '/scripts/script1.js',
     '/scripts/script2.js',
