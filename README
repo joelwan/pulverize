@@ -1,0 +1,1 @@
+Pulverizer recursively traverses all files replaces <scripts> and <style> references within web projects with a minified and gzipped equivalent.

@@ -3,7 +3,7 @@ require 'config.rb'
 def recurse(dir)
   return if dir.empty?
   
-  pattern = /(\<\!\-\-pulverize.*?\<\!\-\-\/pulverize\-\-\>)/im
+  pattern = /(\<\!\-\-pvl.*?type[ ]*=[ ]*[\'\"]([^\"]*)[\'\"].*?id[ ]*=[ ]*[\'\"]([^\"]*)[\'\"].*?\<\!\-\-\/pvl\-\-\>)/im
   
   Dir.foreach(dir) do |file|
     dirpath = dir + '/' + file
@@ -13,15 +13,18 @@ def recurse(dir)
     else
       ext = File.extname(file)
       if $config['extensions'].include?(ext)
-        #puts dirpath
         lines = []
         File.open(dirpath, 'r') { |f| 
           lines = f.read 
-          #puts lines
-          
-          matches = lines.gsub(pattern, "***")
-          #puts matches
-
+          matches = lines.scan(pattern)
+          matches.each do |match|
+            type = match[1]
+            id = match[2]
+            set = $config[type][id]
+            unless set.nil?
+              puts lines.gsub(match[0], "***")
+            end
+          end
         }
       end
     end
