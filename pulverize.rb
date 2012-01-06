@@ -77,5 +77,9 @@ def saveManifest
   end
 end
 
-$root = 'test'
-pulverize($root)
+if ARGV.empty?
+  puts 'Missing argument. Usage: pulverize.rb [directory]'
+else
+  $root = ARGV[0]
+  pulverize($root)
+end
