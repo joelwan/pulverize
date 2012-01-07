@@ -24,7 +24,8 @@ def pulverize(dir)
             set = $config[type][id]
             unless set.nil?
               tmp = concat(dir, set, type, id)
-              pulverized = min(tmp)              
+              cleanRef(tmp)
+              pulverized = min(tmp)
               lines = lines.gsub(match[0], buildRef(pulverized, type, id))
             end
           end
@@ -56,7 +57,10 @@ def min(file)
   return newfile
 end
 
-
+def cleanRef(tmp)
+  oldfiles = tmp.gsub(/\.([a-zA-Z])*$/, ".min-v*\\0")
+  delete = %x[rm -f #{oldfiles}]
+end
 
 def buildRef(path, type, id)
   open = "<!--pvl type='"+type+"' id='"+id+"' -->"
