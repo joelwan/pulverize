@@ -52,7 +52,7 @@ end
 def min(file)
   newfile = file.gsub(/\.([a-zA-Z])*$/, ".min-v"+$nextVersion+"\\0")
   #minify using yuicompressor
-  pulverized = %x[java -jar tools/yuicompressor-2.4.5.jar #{file} -o #{newfile}]
+  pulverized = %x[java -jar tools/yuicompressor-2.4.5.jar #{$config['yui_options']} #{file} -o #{newfile}]
   return newfile
 end
 

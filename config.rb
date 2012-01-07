@@ -3,7 +3,8 @@ $config = {
   'cssPath'     => "",
   "jsPath" => "",
   'css'         => {},
-  'js'     => {}
+  'js'     => {},
+  'yui_options' => '--preserve-semi'
 }
 
 $config['cssPath'] = 'css'
