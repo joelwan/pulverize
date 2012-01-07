@@ -26,6 +26,7 @@ def pulverize(dir, undo)
               tmp = concat(dir, set, type, id)
               cleanRef(tmp)
               if undo > 0
+                delete = %x[rm -f #{tmp}]
                 lines = lines.gsub(match[0], inflate(set, type, id))
               else
                 pulverized = min(tmp)
