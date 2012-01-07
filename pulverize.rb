@@ -1,7 +1,7 @@
 require 'config.rb'
 require 'manifest.rb'
 
-def pulverize(dir)
+def pulverize(dir, undo)
   return if dir.empty?
   
   pattern = /(\<\!\-\-pvl.*?type[ ]*=[ ]*[\'\"]([^\"\']*)[\'\"].*?id[ ]*=[ ]*[\'\"]([^\"\']*)[\'\"].*?\<\!\-\-\/pvl\-\-\>)/im
@@ -10,7 +10,7 @@ def pulverize(dir)
     dirpath = dir + '/' + file
     if File.directory?(dirpath) then
       next if file == '.' or file == '..'
-      pulverize(dirpath)
+      pulverize(dirpath, undo)
     else
       ext = File.extname(file)
       if $config['extensions'].include?(ext)
@@ -25,8 +25,12 @@ def pulverize(dir)
             unless set.nil?
               tmp = concat(dir, set, type, id)
               cleanRef(tmp)
-              pulverized = min(tmp)
-              lines = lines.gsub(match[0], buildRef(pulverized, type, id))
+              if undo > 0
+                lines = lines.gsub(match[0], inflate(set, type, id))
+              else
+                pulverized = min(tmp)
+                lines = lines.gsub(match[0], deflate(pulverized, type, id))
+              end
             end
           end
         end
@@ -63,7 +67,7 @@ def cleanRef(tmp)
   delete = %x[rm -f #{oldfiles}]
 end
 
-def buildRef(path, type, id)
+def deflate(path, type, id)
   open = "<!--pvl type='"+type+"' id='"+id+"' -->"
   close = "<!--/pvl-->"
   if type == 'js'
@@ -71,6 +75,23 @@ def buildRef(path, type, id)
   elsif type == 'css'
     return open+'<link rel="stylesheet" href="'+path.gsub($root, '')+'" type="text/css" />'+close
   end
+end
+
+def inflate(files, type, id)
+  open = "<!--pvl type='"+type+"' id='"+id+"' -->"
+  close = "<!--/pvl-->"
+  string = open
+  if type == 'js'
+    files.each do |file|
+      string += '<script src="'+file+'" type="text/javascript"></script>'
+    end
+  elsif type == 'css'
+    files.each do |file|
+      string += '<link rel="stylesheet" href="'+file+'" type="text/css" />'
+    end
+  end
+  string += close
+  return string
 end
 
 def saveManifest
@@ -86,5 +107,5 @@ if ARGV.empty?
   puts 'Missing argument. Usage: pulverize.rb [directory]'
 else
   $root = ARGV[0]
-  pulverize($root)
+  pulverize($root, 0)
 end
