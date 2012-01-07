@@ -15,7 +15,7 @@ def pulverize(dir)
       ext = File.extname(file)
       if $config['extensions'].include?(ext)
         lines = ""
-        File.open(dirpath, 'r') { |f| 
+        File.open(dirpath, 'r') do |f| 
           lines = f.read 
           matches = lines.scan(pattern)
           matches.each do |match|
@@ -29,7 +29,7 @@ def pulverize(dir)
               lines = lines.gsub(match[0], buildRef(pulverized, type, id))
             end
           end
-        }
+        end
         File.open(dirpath, 'w') do |output|
           output.puts lines
         end
