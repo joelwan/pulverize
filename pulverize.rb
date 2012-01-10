@@ -36,7 +36,7 @@ def pulverize(dir, undo)
             end
           end
         end
-        if matches.count > 0 do
+        if matches.count > 0 then
           File.open(dirpath, 'w') do |output|
             output.puts lines
           end
