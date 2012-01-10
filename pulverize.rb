@@ -13,7 +13,7 @@ def pulverize(dir, undo)
       pulverize(dirpath, undo)
     else
       ext = File.extname(file)
-      if $config['extensions'].include?(ext)
+      if $config['pulverize']['extensions'].include?(ext)
         lines = ""
         File.open(dirpath, 'r') do |f| 
           lines = f.read 
@@ -21,7 +21,7 @@ def pulverize(dir, undo)
           matches.each do |match|
             type = match[1]
             id = match[2]
-            set = $config[type][id]
+            set = $config['pulverize'][type][id]
             unless set.nil?
               tmp = concat(dir, set, type, id)
               cleanRef(tmp)
@@ -45,7 +45,7 @@ def pulverize(dir, undo)
 end
 
 def concat(dir, files, type, id)
-  tmp = dir+'/'+$config[type+'Path']+'/'+id+'.'+type
+  tmp = dir+'/'+$config['pulverize'][type+'Path']+'/'+id+'.'+type
   File.open(tmp, 'w') do |output|
     files.each do |file|
       content = File.readlines(dir+'/'+file)
@@ -58,7 +58,7 @@ end
 def min(file)
   newfile = file.gsub(/\.([a-zA-Z])*$/, ".min-v"+$nextVersion+"\\0")
   #minify using yuicompressor
-  pulverized = %x[java -jar tools/yuicompressor-2.4.5.jar #{$config['yui_options']} #{file} -o #{newfile}]
+  pulverized = %x[java -jar tools/yuicompressor-2.4.5.jar #{$config['pulverize']['yui_options']} #{file} -o #{newfile}]
   delete = %x[rm -f #{file}]
   return newfile
 end

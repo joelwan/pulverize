@@ -1,22 +1,24 @@
 $config = {
-  'extensions'  => {},
-  'cssPath'     => "",
-  "jsPath" => "",
-  'css'         => {},
-  'js'     => {},
-  'yui_options' => '--preserve-semi'
+  'pulverize' => {
+      'extensions'  => {},
+      'cssPath'     => "",
+      "jsPath" => "",
+      'css'         => {},
+      'js'     => {},
+      'yui_options' => '--preserve-semi'
+    }
 }
 
-$config['cssPath'] = 'css'
-$config['jsPath'] = 'scripts'
+$config['pulverize']['cssPath'] = 'css'
+$config['pulverize']['jsPath'] = 'scripts'
 
-$config['extensions'] = [
+$config['pulverize']['extensions'] = [
   '.html',
   '.htm',
   '.php' 
 ]
 
-$config['css'] = {
+$config['pulverize']['css'] = {
   'all' => [
     '/css/style1.css',
     '/css/style2.css',
@@ -24,7 +26,7 @@ $config['css'] = {
     ]
 }
 
-$config['js'] = {
+$config['pulverize']['js'] = {
   'all' => [
     '/scripts/script1.js',
     '/scripts/script2.js',
