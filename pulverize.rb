@@ -15,6 +15,7 @@ def pulverize(dir, undo)
       ext = File.extname(file)
       if $config['pulverize']['extensions'].include?(ext)
         lines = ""
+        matches = []
         File.open(dirpath, 'r') do |f| 
           lines = f.read 
           matches = lines.scan(pattern)
@@ -35,8 +36,10 @@ def pulverize(dir, undo)
             end
           end
         end
-        File.open(dirpath, 'w') do |output|
-          output.puts lines
+        if matches.count > 0 do
+          File.open(dirpath, 'w') do |output|
+            output.puts lines
+          end
         end
         saveManifest()
       end
