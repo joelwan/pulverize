@@ -41,10 +41,10 @@ def pulverize(dir, undo)
             output.puts lines
           end
         end
-        saveManifest()
       end
     end
   end
+  saveManifest()
 end
 
 def concat(dir, files, type, id)
