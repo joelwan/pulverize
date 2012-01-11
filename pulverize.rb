@@ -1,6 +1,30 @@
 require 'config.rb'
 require 'manifest.rb'
 
+
+
+def preflight
+  #check script paths
+  pattern = /url[ ]*\([^\/ ]/ 
+  $config['pulverize']['css'].values.each do |combination|
+    combination.each do |bundle|
+      bundle.each do |css|
+        if css.index($config['pulverize']['cssPath']).nil?
+          File.open($root + css, 'r') do |f|
+            buffer = f.read
+            matches = buffer.scan(pattern)
+            if matches.count > 0 then
+              puts 'error ' + ' ' + css + ' contains relative paths - process aborted'
+              return false
+            end  
+          end 
+        end
+      
+      end
+    end
+  end
+end
+
 def pulverize(dir, undo)
   return if dir.empty?
   
@@ -41,14 +65,15 @@ def pulverize(dir, undo)
             output.puts lines
           end
         end
+        saveManifest()
       end
     end
   end
-  saveManifest()
 end
 
 def concat(dir, files, type, id)
   tmp = dir+'/'+$config['pulverize'][type+'Path']+'/'+id+'.'+type
+  tmp = tmp.gsub('//','/')
   File.open(tmp, 'w') do |output|
     files.each do |file|
       content = File.readlines(dir+'/'+file)
@@ -111,5 +136,7 @@ if ARGV.empty?
   puts 'Missing argument. Usage: pulverize.rb [directory]'
 else
   $root = ARGV[0]
-  pulverize($root, 0)
+  if preflight() then
+    pulverize($root, 0)
+  end
 end

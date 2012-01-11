@@ -1,3 +1,4 @@
+#generic config object
 $config = {
   'pulverize' => {
       'extensions'  => {},
@@ -9,15 +10,18 @@ $config = {
     }
 }
 
+#location where the combined and minified scripts are generated
 $config['pulverize']['cssPath'] = 'css'
 $config['pulverize']['jsPath'] = 'scripts'
 
+#file extensions to parse
 $config['pulverize']['extensions'] = [
   '.html',
   '.htm',
   '.php' 
 ]
 
+#css combinations
 $config['pulverize']['css'] = {
   'all' => [
     '/css/style1.css',
@@ -26,6 +30,7 @@ $config['pulverize']['css'] = {
     ]
 }
 
+#js combinations
 $config['pulverize']['js'] = {
   'all' => [
     '/scripts/script1.js',
